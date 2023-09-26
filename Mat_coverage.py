@@ -13,24 +13,9 @@ mat_list = materials.mat_list
 
 pos = pcpy.PurchaseOrders(materials=materials)
 
-def csv_tolist(filepath, float_column, date_column=None):
+po_list = pos.POs
 
-    dateformat = '%d/%m/%Y'
-
-    with open(filepath, 'r') as file:
-        file_list = list(csv.reader(file, delimiter=';'))
-
-    file_list.pop(0)
-    file_list = pcpy.txt_to_float(file_list, float_column)
-
-    if date_column != None:
-        for line in file_list:
-            line[date_column] = datetime.strptime(line[date_column], dateformat)
-    return file_list
-
-# pos = csv_tolist('data/POs.csv', 3, 2)
-
-cons = csv_tolist('data/cons.csv', 3, 0)
+cons = pcpy.csv_tolist('data/cons.csv', [3], 0)
 
 end_date = datetime(year=2024, month=3, day=31)
 
@@ -42,9 +27,10 @@ for mat, item in mat_list.items():
     cod = mat
     inv = item.inv
 
-    pos_cod = pcpy.search_list(pos, cod, 4)
+    pos_cod = pcpy.search_list(po_list, cod, 5)
     cons_cod = pcpy.search_list(cons, cod, 1)
 
+    if not pos_cod: continue
 
     for po in pos_cod:
         po_date = po[5]
