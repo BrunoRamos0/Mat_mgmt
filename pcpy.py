@@ -9,7 +9,6 @@ from dateutil.relativedelta import relativedelta
 
 class Plans():
 
-
     def __init__(self, folder='Plans', plan_type='main'):
         self.folder = folder
         self.planlist = []
@@ -128,14 +127,15 @@ class PurchaseOrders():
         if False:
             self.POs = PurchaseOrders.get_POs(self, codes=codes, update=True)
 
-        self.POs = PurchaseOrders.get_POs(self)
+        self.POs = PurchaseOrders.get_POs(self, codes=codes, update=True)
 
 
-    def get_POs(self, codes=None, filepath='data/parsed_PEDPEND.txt', update=False):
+    def get_POs(self, codes=None, filepath='data/data.txt', update=False):
 
         if update:
             codes = pd.Series(data=codes)
-            filepath = sapy.SAP_Update().get_PEDPEND(Comp=codes)
+            # filepath = sapy.SAP_Update().get_PEDPEND(Comp=codes)
+            filepath='data/data.txt'
             filepath = sapy.SAP_Parse.parse_PEDPEND(filepath=filepath)
 
         return pd.read_csv(filepath, sep='|', thousands='.', decimal=',', encoding='ISO-8859-1')

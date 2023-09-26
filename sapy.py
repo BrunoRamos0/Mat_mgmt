@@ -4,111 +4,6 @@ import os
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-class SAP_Parse():
-
-    @staticmethod
-    def parse_YP22(filepath, writepath=r'data/parsed_YP22.txt'):
-        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
-
-            f_output.write('Cen.|LTAlt.|SKU|UMB|Qtd.básica|Componente|Texto breve objeto|Qtd.(UMB)|UM\n')
-
-            for line in filter(
-                lambda x: len(x) > 2
-                and x[0] == "|"
-                and x[1] != "-"
-                and not x[6].isalpha(),
-                f_input
-            ):
-                ## Split on | delimeter
-                line_contents = [x.strip() for x in line.split("|")]
-
-                ## Replace '.' thousand separator with ''
-                line_contents = line_contents[:5] + [line_contents[5].replace('.', '')] + \
-                                line_contents[6:-3] + [word.replace('.', '') for word in line_contents[-3:]]
-
-                f_output.write("|".join(line_contents[1:-1]) + "\n")
-
-            return writepath 
-
-    @staticmethod
-    def parse_Inv(filepath, writepath=r'data/parsed_Inv.txt'):
-        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
-
-            for line in filter(
-                lambda x: len(x) > 2
-                and x[0] == "|"
-                and x[1] != "-",
-                f_input
-            ):
-                # Split on | delimeter
-                line_contents = [x.strip() for x in line.split("|")]
-
-                # Replace '.' thousand separator with ''
-                line_contents = line_contents[:5] + [word.replace('.', '') for word in line_contents[5:]]
-
-                f_output.write("|".join(line_contents[1:-1]) + "\n")
-            
-            return writepath
-
-    @staticmethod
-    def parse_PEDPEND(filepath, writepath=r'data/parsed_PEDPEND.txt'):
-        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
-
-            for line in filter(
-                lambda x: len(x) > 2
-                and x[0] == "|"
-                and x[1] != "-",
-                f_input
-            ):
-                # Split on | delimeter
-                line_contents = [x.strip() for x in line.split("|")]
-
-                # Replace '.' thousand separator with ''
-                line_contents = line_contents[:15] + [word.replace('.', '') for word in line_contents[15:-17]] + line_contents[-17:]
-
-                f_output.write("|".join(line_contents[1:-1]) + "\n")
-
-            return writepath  
-
-    @staticmethod
-    def parse_j3(filepath, writepath=r'data/parsed_j3.txt'):
-        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
-
-            for line in filter(
-                lambda x: len(x) > 2
-                and x[0] == "|"
-                and x[1] != "-"
-                and x[4] == " "
-                and x[5] != " ",
-                f_input
-            ):
-                # Split on | delimeter
-                line_contents = [x.strip() for x in line.split("|")]
-
-                f_output.write("|".join(line_contents[1:5]) + "\n")
-            
-            return writepath  
-
-    @staticmethod
-    def parse_Hist(filepath, writepath=r'data/parsed_Hist.txt'):
-        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
-
-            for line in filter(
-                lambda x: len(x) > 2
-                and x[0] == "|"
-                and x[1] != "-",
-                f_input
-            ):
-                # Split on | delimeter
-                line_contents = [x.strip() for x in line.split("|")]
-
-                # Replace '.' thousand separator with ''
-                line_contents = line_contents[:15] + [word.replace('.', '') for word in line_contents[15:-17]] + line_contents[-17:]
-
-                f_output.write("|".join(line_contents[1:-1]) + "\n")
-
-            return writepath  
-
 class SAP_Update():
     
     def __init__(self):
@@ -288,3 +183,114 @@ class SAP_Update():
         dateSart = datetime(year, month, 1)
         dateEnd = dateSart + relativedelta(day=31)
         return dateEnd.day
+
+
+class SAP_Parse():
+
+    @staticmethod
+    def parse_YP22(filepath, writepath=r'data/parsed_YP22.txt'):
+        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
+
+            f_output.write('Cen.|LTAlt.|SKU|UMB|Qtd.básica|Componente|Texto breve objeto|Qtd.(UMB)|UM\n')
+
+            for line in filter(
+                lambda x: len(x) > 2
+                and x[0] == "|"
+                and x[1] != "-"
+                and not x[6].isalpha(),
+                f_input
+            ):
+                ## Split on | delimeter
+                line_contents = [x.strip() for x in line.split("|")]
+
+                ## Replace '.' thousand separator with ''
+                line_contents = line_contents[:5] + [line_contents[5].replace('.', '')] + \
+                                line_contents[6:-3] + [word.replace('.', '') for word in line_contents[-3:]]
+
+                f_output.write("|".join(line_contents[1:-1]) + "\n")
+
+            return writepath 
+
+    @staticmethod
+    def parse_Inv(filepath, writepath=r'data/parsed_Inv.csv'):
+        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
+
+            for line in filter(
+                lambda x: len(x) > 2
+                and x[0] == "|"
+                and x[1] != "-",
+                f_input
+            ):
+                # Split on | delimeter
+                line_contents = [x.strip() for x in line.split("|")]
+
+                # Replace '.' thousand separator with ''
+                line_contents = line_contents[:5] + [word.replace('.', '') for word in line_contents[5:]]
+
+                f_output.write(";".join(line_contents[1:-1]) + "\n")
+            
+            return writepath
+
+    @staticmethod
+    def parse_PEDPEND(filepath, writepath=r'data/parsed_PEDPEND.csv'):
+        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
+
+            for line in filter(
+                lambda x: len(x) > 2
+                and x[0] == "|"
+                and x[1] != "-",
+                f_input
+            ):
+                # Split on | delimeter
+                line_contents = [x.strip() for x in line.split("|")]
+
+                # Replace '.' thousand separator with ''
+                line_contents = line_contents[:15] + [word.replace('.', '') for word in line_contents[15:-17]] + line_contents[-17:]
+                line_contents = line_contents[1:-1]
+                # Keep only selected columns
+                column_list = [1, 2, 3, 5, 9, 13, 15, 17, 18, 20]
+                line_contents = [line_contents[i] for i in column_list]
+
+                f_output.write(";".join(line_contents) + "\n")
+
+            return writepath  
+
+    @staticmethod
+    def parse_j3(filepath, writepath=r'data/parsed_j3.txt'):
+        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
+
+            for line in filter(
+                lambda x: len(x) > 2
+                and x[0] == "|"
+                and x[1] != "-"
+                and x[4] == " "
+                and x[5] != " ",
+                f_input
+            ):
+                # Split on | delimeter
+                line_contents = [x.strip() for x in line.split("|")]
+
+                f_output.write("|".join(line_contents[1:5]) + "\n")
+            
+            return writepath  
+
+    @staticmethod
+    def parse_Hist(filepath, writepath=r'data/parsed_Hist.txt'):
+        with open(filepath, "r") as f_input, open(writepath, "w") as f_output:
+
+            for line in filter(
+                lambda x: len(x) > 2
+                and x[0] == "|"
+                and x[1] != "-",
+                f_input
+            ):
+                # Split on | delimeter
+                line_contents = [x.strip() for x in line.split("|")]
+
+                # Replace '.' thousand separator with ''
+                line_contents = line_contents[:15] + [word.replace('.', '') for word in line_contents[15:-17]] + line_contents[-17:]
+
+                f_output.write("|".join(line_contents[1:-1]) + "\n")
+
+            return writepath  
+
