@@ -13,9 +13,9 @@ mat_list = materials.mat_list
 
 pos = pcpy.PurchaseOrders(materials=materials)
 
-dateformat = '%d/%m/%Y'
-
 def csv_tolist(filepath, float_column, date_column=None):
+
+    dateformat = '%d/%m/%Y'
 
     with open(filepath, 'r') as file:
         file_list = list(csv.reader(file, delimiter=';'))
