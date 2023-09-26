@@ -3,6 +3,8 @@ from openpyxl import load_workbook
 import pandas as pd
 import numpy as np
 import sapy
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 
 class Plans():
@@ -152,3 +154,18 @@ def txt_to_float(nested_list, column):
         line[column] = float(line[column].replace('.', '').replace(',', '.'))
     return nested_list
     
+def inv_po(date, po_date, cons_cod, inv, end_date):
+    eom = datetime(date.year, date.month, 1) + relativedelta(months=1, days=-1)
+    som = datetime(date.year, date.month, 1)
+    next_date = min(po_date, eom)
+    days = next_date - date
+    days = days.total_seconds() / 60 / 60 / 24
+    cons = float(search_list(cons_cod, som, 0)[0][3])/30
+    inv -= cons * days
+    if next_date == po_date:
+        return inv
+    elif next_date > end_date:
+        return inv
+    else:
+        next_date = next_date + relativedelta(days=1)
+        return inv_po(next_date, po_date, cons_cod, inv, end_date)
