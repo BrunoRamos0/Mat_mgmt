@@ -28,7 +28,7 @@ def csv_tolist(filepath, float_column, date_column=None):
             line[date_column] = datetime.strptime(line[date_column], dateformat)
     return file_list
 
-pos = csv_tolist('data/POs.csv', 3, 2)
+# pos = csv_tolist('data/POs.csv', 3, 2)
 
 cons = csv_tolist('data/cons.csv', 3, 0)
 
@@ -42,17 +42,17 @@ for mat, item in mat_list.items():
     cod = mat
     inv = item.inv
 
-    pos_cod = pcpy.search_list(pos, cod, 1)
+    pos_cod = pcpy.search_list(pos, cod, 4)
     cons_cod = pcpy.search_list(cons, cod, 1)
 
 
     for po in pos_cod:
-        po_date = po[2]
-        po_qty = po[3]
+        po_date = po[5]
+        po_qty = po[6] - po[7]
         po_inv = pcpy.inv_po(date, po_date, cons_cod, inv, end_date)
         inv = po_inv + po_qty
         date = po_date
-        po_coverage.append([cod, po[0], po_date, po_qty, po_inv])
+        po_coverage.append([cod, f'{po[0]}/{po[1]}', po_date, po_qty, po_inv])
 
 
 df_po_coverage = pd.DataFrame(po_coverage[1:], columns=po_coverage[0])

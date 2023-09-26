@@ -3,6 +3,7 @@ from openpyxl import load_workbook
 import pandas as pd
 import numpy as np
 import sapy
+import csv
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -138,7 +139,7 @@ class PurchaseOrders():
             filepath='data/data.txt'
             filepath = sapy.SAP_Parse.parse_PEDPEND(filepath=filepath)
 
-        return pd.read_csv(filepath, sep='|', thousands='.', decimal=',', encoding='ISO-8859-1')
+        return csv_tolist(filepath=filepath, float_column=[6, 7, 8], date_column=5, dateformat="%d.%m.%Y")
     
 
 def search_list(list, text, column):
@@ -169,3 +170,19 @@ def inv_po(date, po_date, cons_cod, inv, end_date):
     else:
         next_date = next_date + relativedelta(days=1)
         return inv_po(next_date, po_date, cons_cod, inv, end_date)
+    
+def csv_tolist(filepath, float_column, date_column=None, dateformat='%d/%m/%Y'):
+
+    with open(filepath, 'r') as file:
+        file_list = list(csv.reader(file, delimiter=';'))
+
+    file_list.pop(0)
+
+    for column in float_column:
+        file_list = txt_to_float(file_list, column)
+
+    if date_column != None:
+        for line in file_list:
+            line[date_column] = datetime.strptime(line[date_column], dateformat)
+
+    return file_list

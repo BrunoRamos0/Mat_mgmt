@@ -238,7 +238,8 @@ class SAP_Parse():
             for line in filter(
                 lambda x: len(x) > 2
                 and x[0] == "|"
-                and x[1] != "-",
+                and x[1] != "-"
+                and x[3] != " ",
                 f_input
             ):
                 # Split on | delimeter
@@ -247,6 +248,10 @@ class SAP_Parse():
                 # Replace '.' thousand separator with ''
                 line_contents = line_contents[:15] + [word.replace('.', '') for word in line_contents[15:-17]] + line_contents[-17:]
                 line_contents = line_contents[1:-1]
+
+                if not line_contents[0]:
+                    continue
+
                 # Keep only selected columns
                 column_list = [1, 2, 3, 5, 9, 13, 15, 17, 18, 20]
                 line_contents = [line_contents[i] for i in column_list]
