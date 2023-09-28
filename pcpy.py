@@ -170,6 +170,31 @@ def inv_po(date, po_date, cons_cod, inv, end_date):
     else:
         next_date = next_date + relativedelta(days=1)
         return inv_po(next_date, po_date, cons_cod, inv, end_date)
+
+def inv_po_coverage(inv, date, cons_cod, end_date, coverage=0):
+    eom = datetime(date.year, date.month, 1) + relativedelta(months=1, days=-1)
+    som = datetime(date.year, date.month, 1)
+    days = eom - date
+    days = days.total_seconds() / 60 / 60 / 24 + 1
+    cons = float(search_list(cons_cod, som, 0)[0][3])/30 * days
+    if cons > inv:
+        coverage += inv / cons
+        return coverage
+    elif eom < end_date:
+        inv -= cons
+        coverage += 1
+        date = eom + relativedelta(days=1)
+        return inv_po_coverage(inv, date, cons_cod, end_date, coverage)
+    else:
+        return coverage + 1
+
+    # if next_date == po_date:
+    #     return inv
+    # elif next_date > end_date:
+    #     return inv
+    # else:
+    #     next_date = next_date + relativedelta(days=1)
+    #     return inv_po(next_date, po_date, cons_cod, inv, end_date)
     
 def csv_tolist(filepath, float_column, date_column=None, dateformat='%d/%m/%Y'):
 
@@ -186,3 +211,8 @@ def csv_tolist(filepath, float_column, date_column=None, dateformat='%d/%m/%Y'):
             line[date_column] = datetime.strptime(line[date_column], dateformat)
 
     return file_list
+
+
+def remove_outofdate(nested_list, date_column, last_date, start_date):
+    nested_list = [e for e in nested_list if (e[date_column]<=last_date and e[date_column]>=start_date)]
+    return nested_list
