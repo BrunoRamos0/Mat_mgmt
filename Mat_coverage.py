@@ -18,6 +18,7 @@ po_list = pos.POs
 end_date = datetime(year=2024, month=3, day=31)
 start_date = datetime.today()
 po_list = pcpy.remove_outofdate(nested_list=po_list, date_column=5,start_date=start_date, last_date=end_date)
+po_list = sorted(po_list, key=lambda x: x[5])
 
 cons = pcpy.csv_tolist('data/cons.csv', [3], 0)
 
@@ -31,6 +32,7 @@ for mat, item in mat_list.items():
 
     pos_cod = pcpy.search_list(po_list, cod, 4)
     cons_cod = pcpy.search_list(cons, cod, 1)
+    cons_cod = sorted(cons_cod, key=lambda x: x[0])
 
     if not pos_cod: continue
 

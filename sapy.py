@@ -77,7 +77,10 @@ class SAP_Update():
         self.session.findById("wnd[0]/usr/btn%_MATNR_%_APP_%-VALU_PUSH").press()
         self.session.findById("wnd[1]").sendVKey(24)
         self.session.findById("wnd[0]").sendVKey(8)
-        self.session.findById("wnd[0]/usr/ctxtWERKS-LOW").Text = "ced"
+        self.session.findById("wnd[0]/usr/btn%_WERKS_%_APP_%-VALU_PUSH").press()
+        self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL_255-SLOW_I[1,0]").text = "CED"
+        self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL_255-SLOW_I[1,1]").text = "PRA"
+        self.session.findById("wnd[1]").sendVKey(8)
         self.session.findById("wnd[0]").sendVKey(0)
         self.session.findById("wnd[0]").sendVKey(8)
         self.session.findById("wnd[0]/tbar[1]/btn[45]").press()

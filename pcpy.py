@@ -40,7 +40,7 @@ class Materials():
     def __init__(self, file_path='data/Class MPs.xlsx'):
         self.file_path = file_path
         self.materials = Materials.get_materials(self, self.file_path)
-        self.inventory = Materials.get_inv(list(self.materials.keys()), update=False)
+        self.inventory = Materials.get_inv(list(self.materials.keys()), update=True)
         self.agg_inv = Materials.agg_inv(self.inventory)
 
         self.mat_list = Materials.create_material(self)
@@ -79,7 +79,7 @@ class Materials():
         else:
             filepath = 'data/parsed_Inv.txt'
 
-        return pd.read_csv(filepath, sep='|', thousands='.', decimal=',', encoding='ISO-8859-1')
+        return pd.read_csv(filepath, sep=';', thousands='.', decimal=',', encoding='ISO-8859-1')
     
 
     @staticmethod
@@ -125,19 +125,18 @@ class PurchaseOrders():
         self.materials = materials
         
         codes=list(self.materials.mat_list.keys())
-        if False:
-            self.POs = PurchaseOrders.get_POs(self, codes=codes, update=True)
 
-        self.POs = PurchaseOrders.get_POs(self, codes=codes, update=True)
+        self.POs = PurchaseOrders.get_POs(self, codes=codes, update=False)
 
 
-    def get_POs(self, codes=None, filepath='data/data.txt', update=False):
+    def get_POs(self, codes=None, filepath=None, update=False):
 
         if update:
             codes = pd.Series(data=codes)
-            # filepath = sapy.SAP_Update().get_PEDPEND(Comp=codes)
-            filepath='data/data.txt'
+            filepath = sapy.SAP_Update().get_PEDPEND(Comp=codes)
             filepath = sapy.SAP_Parse.parse_PEDPEND(filepath=filepath)
+
+        if filepath == None: filepath='data/parsed_PEDPEND.csv'
 
         return csv_tolist(filepath=filepath, float_column=[6, 7, 8], date_column=5, dateformat="%d.%m.%Y")
     
@@ -188,13 +187,6 @@ def inv_po_coverage(inv, date, cons_cod, end_date, coverage=0):
     else:
         return coverage + 1
 
-    # if next_date == po_date:
-    #     return inv
-    # elif next_date > end_date:
-    #     return inv
-    # else:
-    #     next_date = next_date + relativedelta(days=1)
-    #     return inv_po(next_date, po_date, cons_cod, inv, end_date)
     
 def csv_tolist(filepath, float_column, date_column=None, dateformat='%d/%m/%Y'):
 
