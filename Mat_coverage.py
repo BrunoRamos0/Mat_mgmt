@@ -17,12 +17,13 @@ def main():
 
     po_list = pos.POs
 
+    pos.create_PO()
+
     end_date = datetime(year=2024, month=3, day=31)
     start_date = datetime.today()
     po_list = pcpy.remove_outofdate(
         nested_list=po_list, date_column=5, start_date=start_date, last_date=end_date
     )
-    po_list = sorted(po_list, key=lambda x: x[5])
 
     cons = pcpy.csv_tolist("data/cons.csv", [3], 0)
 
